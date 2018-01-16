@@ -1,0 +1,13 @@
+<network>
+  <name>provision-net</name>
+  <uuid>c9723909-b0a5-4303-a717-d603be4c13a5</uuid>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:e5:8e:46'/>
+  <domain name='provision-net'/>
+  <ip address='192.168.200.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.200.128' end='192.168.200.254'/>
+    </dhcp>
+  </ip>
+</network>
+

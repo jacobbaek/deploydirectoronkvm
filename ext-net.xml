@@ -1,0 +1,16 @@
+<network>
+  <name>ext-net</name>
+  <uuid>cdd6e0bc-f1e6-4910-b64f-64a55115d352</uuid>
+  <forward dev='enp0s31f6' mode='nat'>
+    <interface dev='enp0s31f6'/>
+  </forward>
+  <bridge name='virbr3' stp='on' delay='0'/>
+  <mac address='52:54:00:4c:cb:a6'/>
+  <domain name='ext-net'/>
+  <ip address='192.168.100.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.100.128' end='192.168.100.254'/>
+    </dhcp>
+  </ip>
+</network>
+
