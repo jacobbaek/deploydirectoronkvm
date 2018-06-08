@@ -2,6 +2,7 @@
 
 # refer to following page
 # - https://www.linuxtechi.com/deploy-tripleo-overcloud-controller-computes-centos-7/
+# - https://www.linuxtechi.com/install-tripleo-undercloud-centos-7/
 
 ## variables 
 _path='/var/lib/libvirt/images/'
@@ -47,8 +48,8 @@ KEY=`cat /home/stack/.ssh/id_rsa.pub`
 sudo sed -i "$ a $KEY" /root/.ssh/authorized_keys
 
 vbmc add $ctl --port 6111 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
-vbmc add $com1 --port 6222 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
-vbmc add $com2 --port 6333 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
+vbmc add $com1 --port 6112 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
+vbmc add $com2 --port 6113 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
 
 vbmc start $ctl
 vbmc start $com1
