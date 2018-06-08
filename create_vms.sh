@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# refer to following page
+# - https://www.linuxtechi.com/deploy-tripleo-overcloud-controller-computes-centos-7/
+
 ## variables 
 _path='/var/lib/libvirt/images/'
 ctl='overcloud-controller'
@@ -33,14 +36,19 @@ sudo virsh define --file /tmp/$com1.xml
 sudo virsh define --file /tmp/$com2.xml
 
 sudo yum install -y python-virtualbmc
+sudo yum install ipmitool -y
+
+vbmc delete $ctl
+vbmc delete $com1
+vbmc delete $com2
 
 #ssh-keygen -b 2048 -t rsa -f /home/stack/.ssh/id_rsa -q -N ""
 KEY=`cat /home/stack/.ssh/id_rsa.pub`
 sudo sed -i "$ a $KEY" /root/.ssh/authorized_keys
 
-vbmc add $ctl --port 6001 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
-vbmc add $com1 --port 6001 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
-vbmc add $com2 --port 6001 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
+vbmc add $ctl --port 6111 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
+vbmc add $com1 --port 6222 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
+vbmc add $com2 --port 6333 --username admin --password password --libvirt-uri qemu+ssh://root@192.168.122.1/system
 
 vbmc start $ctl
 vbmc start $com1
