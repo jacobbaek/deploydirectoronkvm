@@ -1,0 +1,14 @@
+<network>
+    <name>ovs-net-vlan</name>
+    <forward mode='bridge'/>
+    <bridge name='br1'/>
+    <virtualport type='openvswitch'/>
+    <portgroup name='vlan-all' default='yes'>
+        <vlan trunk='yes'>
+            <tag id='802'/>
+            <tag id='803'/>
+            <tag id='804'/>
+            <tag id='805'/>
+        </vlan>
+    </portgroup>
+</network>

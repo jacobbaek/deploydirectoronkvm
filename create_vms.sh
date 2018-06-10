@@ -4,6 +4,56 @@
 # - https://www.linuxtechi.com/deploy-tripleo-overcloud-controller-computes-centos-7/
 # - https://www.linuxtechi.com/install-tripleo-undercloud-centos-7/
 
+yum install openvswitch -y
+systemctl  enable --now openvswitch
+
+
+sudo setenforce 0
+sed -i 's/enforcing/permissive/g' /etc/sysconfig/selinux
+
+
+## make virtual ports
+
+ovs-vsctl add-br vswitch
+ovs-vsctl add-port 
+ovs-vsctl add-port 
+
+cat <<EOF > /tmp/ifcfg-vswitch
+DEVICE=vswitch
+ONBOOT=yes
+HOTPLUG=no
+NM_CONTROLLED=no
+PEERDNS=no
+DEVICETYPE=ovs
+TYPE=OVSBridge
+EOF
+
+## make virtual network on virt
+
+ovsnet="ovsnet"
+
+cat <<EOF > /tmp/$ovsnet.xml
+<network>
+    <name>$ovsnet</name>
+    <forward mode='bridge'/>
+    <bridge name='br1'/>
+    <virtualport type='openvswitch'/>
+    <portgroup name='vlan-all' default='yes'>
+        <vlan trunk='yes'>
+            <tag id='801'/>
+            <tag id='802'/>
+            <tag id='803'/>
+            <tag id='804'/>
+        </vlan>
+    </portgroup>
+</network>
+EOF
+
+virsh net-define /tmp/$ovsnet.xml
+virsh net-start $ovsnet
+virsh net-autostart $ovsnet
+
+
 ## variables 
 _path='/var/lib/libvirt/images/'
 ctl='overcloud-controller'
@@ -36,6 +86,11 @@ sudo virsh define --file /tmp/$ctl.xml
 sudo virsh define --file /tmp/$com1.xml
 sudo virsh define --file /tmp/$com2.xml
 
+sudo virsh attach-interface --domain $ctl --type bridge --source $ovsnet --model virtio --config; sudo virt-xml $ctl --edit 2 --network virtualport_type=openvswitch
+sudo virsh attach-interface --domain $com1 --type bridge --source $ovsnet --model virtio --config; sudo virt-xml $ctl --edit 2 --network virtualport_type=openvswitch
+sudo virsh attach-interface --domain $com2 --type bridge --source $ovsnet --model virtio --config; sudo virt-xml $ctl --edit 2 --network virtualport_type=openvswitch
+
+## setup ipmi using vbmc
 sudo yum install -y python-virtualbmc
 sudo yum install ipmitool -y
 
